@@ -1,0 +1,3 @@
+function q= inverse(H,myrobot)
+    myrobot.ikine()
+end
