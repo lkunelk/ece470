@@ -1,3 +1,3 @@
-function q= inverse(H,myrobot)
-    q = myrobot.ikine6s(H)
+function q= inverse(H, robot)
+    q = robot.ikine(H,'q0',[ 1 -1 -1 3 3 1]);
 end

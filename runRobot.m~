@@ -31,15 +31,10 @@ o = [x' y' z'];
 R = rotz(pi/4);
 
 angles = zeros(100, 6);
-for d = 1:100
+for d = 1:80
     d
     H = [R o(d,:)'; 0 0 0 1];
     angles(d,:) = inverse(H, robot);
-    angles(d,:)
 end
-%%
-for j=1:5
-%plot3(o(:,1), o(:,2), o(:,3))
-    plot(robot, angles)
-    hold on;
-end
+
+plot3(robot, angles)
