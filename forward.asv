@@ -1,3 +1,0 @@
-function H= forward(joint,myrobot)
-    
-end
