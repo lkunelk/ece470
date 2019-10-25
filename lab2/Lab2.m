@@ -13,20 +13,22 @@ DH = [
     [0,  0, a3, pi/2 ]
     [0, d4,  0,-pi/2 ]
     [0,  0,  0, pi/2 ]
-    [0, d6,-a6, 0    ]
+    [0, d6, -a6, 0   ]
 ];
 
 kuka = mykuka(DH);
+kuka_wrist = mykuka(DH(1:4,:))
 
-plot(kuka, [0 pi/2 0 0 pi/2 0])
+plot(kuka, [0 0 0 0 0 0])
 
 %% test model
 test_q = [pi/5 pi/3 -pi/4 pi/4 pi/3 pi/4]'
+test_q = [0 0 pi/2 0 pi/2 0]';
 H = forward_kuka(test_q, kuka);
-plot(kuka, test_q')
+H_wrist = forward_kuka(test_q(1:4), kuka_wrist);
+plot(kuka, test_q');
 
 %% inverse
 q = inverse_kuka(H, kuka);
-q(1)/pi*180
-.6283/pi*180
-180/5
+test_q'
+q'

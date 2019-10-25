@@ -3,7 +3,7 @@ function myrobot = mykuka(DH)
     % return SerialLink representing the robot
     
     clear L;
-    for i = 1:6
+    for i = 1:size(DH, 1)
         L(i) = Link(DH(i,:));
     end
     myrobot = SerialLink(L);
