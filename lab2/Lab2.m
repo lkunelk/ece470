@@ -22,13 +22,22 @@ kuka_wrist = mykuka(DH(1:4,:))
 plot(kuka, [0 0 0 0 0 0])
 
 %% test model
-test_q = [pi/5 pi/3 -pi/4 pi/4 pi/3 pi/4]'
-test_q = [0 0 pi/2 0 pi/2 0]';
-H = forward_kuka(test_q, kuka);
-H_wrist = forward_kuka(test_q(1:4), kuka_wrist);
-plot(kuka, test_q');
+n = 100
+start_q = [0 pi/2 0 0 0 pi/2 0];
+desir_q = [pi/5 pi/3 -pi/4 pi/4 pi/3 pi/4];
+%desir_q = [0 pi/2 0 0 pi/2 0]
+
+qs = zeros(n, 6);
+for i=1:6
+    qs(:, i) = linspace(start_q(i), desir_q(i), n)';
+end
+
+H = forward_kuka(desir_q, kuka)
+plot(kuka, qs);
 
 %% inverse
+%H = [0 0 1 500; 0 -1 0 0; 1 0 0 0; 0 0 0 1]
+%H_d = SE3.check(H)
 q = inverse_kuka(H, kuka);
-test_q'
+desir_q
 q'
