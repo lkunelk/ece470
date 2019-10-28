@@ -1,0 +1,9 @@
+function result = eight()
+    theta = linspace(0,2*pi,100)
+    xcoord  = 610 + 20*cos(theta)
+    ycoord  = 20*sin(theta);
+    xcoord2 = 650 + 20*cos(theta);
+    zcoord = linspace(-2,-2,100);
+    line1  = [xcoord ; ycoord; zcoord]
+    line2 = [xcoord2;ycoord; zcoord]
+    result = [line1 , line2];
