@@ -22,7 +22,7 @@ kuka_wrist = mykuka(DH(1:4,:))
 plot(kuka, [0 0 0 0 0 0])
 
 %% test model
-n = 100
+n = 100;
 start_q = [0 pi/2 0 0 0 pi/2 0];
 desir_q = [pi/5 pi/3 -pi/4 pi/4 pi/3 pi/4];
 %desir_q = [0 pi/2 0 0 pi/2 0]
@@ -32,8 +32,20 @@ for i=1:6
     qs(:, i) = linspace(start_q(i), desir_q(i), n)';
 end
 
-H = forward_kuka(desir_q, kuka)
+H = forward_kuka(qs, kuka);
 plot(kuka, qs);
+
+%% test the inverse kinematics
+% prints problem if angles from inverse don't match expected angles
+for i=1:n
+    q = inverse_kuka(H(i), kuka);
+    norm(qs(i,:) - q');
+    if norm(qs(i,:) - q') > .01;
+        q'
+        qs(i,:)
+        "problem!"
+    end
+end
 
 %% inverse
 %H = [0 0 1 500; 0 -1 0 0; 1 0 0 0; 0 0 0 1]
