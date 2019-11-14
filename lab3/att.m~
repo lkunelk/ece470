@@ -1,8 +1,0 @@
-function tau = att(q, q2, myrobot)
-    % 
-    % q: column vector of current angles
-    % q2: columne vector of final angles
-    % myrobot: robot structure
-    
-    % step1: compute forward kinematics of o
-end
