@@ -11,7 +11,7 @@ function [H] = calc_H(q, link)
 
     H(1,2) = -sin(q) * cos(alpha);
     H(2,2) = cos(q) * cos(alpha);
-    H(3,2) = sin(q);
+    H(3,2) = sin(alpha);
     H(4,2) = 0;
 
     H(1,3) = sin(q) * sin(alpha);

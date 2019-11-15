@@ -20,7 +20,7 @@ plot3(m(:,1),m(:,2),m(:,3),'r')
 hold on
 plot(robot,q)
 %% Forward Kinemtaics Lab 3 - Plot robot following sample trajectory
-Hnew = zeros(200,4,4,6)
+Hnew = zeros(200,4,4,6);
 for i = 1:200
     Hnew(i,:,:,:) = forward_puma_lab3(q(i,:),robot);
 end
