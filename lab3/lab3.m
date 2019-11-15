@@ -1,7 +1,9 @@
 function Lab3()
     my_robot = init_robot();
     q = sample_traj();
-    plot_robot(q, my_robot);
+    obs = setupobstacle();
+    plotobstacle(obs);
+    plot_robot(q, my_robot)
 end
 
 function robot = init_robot()
