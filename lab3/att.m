@@ -12,15 +12,15 @@ function tau = att(q1, q2, myrobot)
     Hq2 = forward_puma_lab3(q2,myrobot);
     
     c = [1 1 1 1 1 1];
-    d = 10000; % Found a very high number
+    d = 100; % Found a very high number
     % step3: compute artificial forces
-    Fatt = zeros(3,6)
+    Fatt = zeros(3,6);
     for i = 1:6
-       dist = norm(Hq2(1:3,4,i) - Hq1(1:3,4,i))
+       dist = norm(Hq2(1:3,4,i) - Hq1(1:3,4,i));
        if (dist < d)
-           Fatt(:,i) = - c(i) * (Hq1(1:3,4,i) - Hq2(1:3,4,i))
+           Fatt(:,i) = - c(i) * (Hq1(1:3,4,i) - Hq2(1:3,4,i));
        else
-           Fatt(:,i) = - c(i) * ((Hq1(1:3,4,i) - Hq2(1:3,4,i)) / dist) * d
+           Fatt(:,i) = - c(i) * ((Hq1(1:3,4,i) - Hq2(1:3,4,i)) / dist) * d;
        end
     end
     % step4: compute Jacobians
@@ -33,5 +33,5 @@ function tau = att(q1, q2, myrobot)
      end
      
      tau = tau / norm(tau);
-%     tau = tau';
+     tau = tau';
 end
