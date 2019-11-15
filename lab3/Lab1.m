@@ -32,6 +32,7 @@ plot(robot,q)
 %% Inverse Kinematics - test sample point
 H = [cos(pi/4) -sin(pi/4) 0 20; sin(pi/4) cos(pi/4) 0 23; 0 0 1 15; 0 0 0 1];
 inverse(H, robot)
+inverse_puma(H, robot)
 
 %% Inverse Kinematics - Setup Variables
 x = linspace(10 , 30 , 100);
@@ -44,7 +45,7 @@ R = rotz(pi/4);
 angles = zeros(100, 6);
 for d = 1:100
     H = [R o(d,:)'; 0 0 0 1];
-    angles(d,:) = inverse(H, robot);
+    angles(d,:) = inverse_puma(H, robot);
 end
 
 %% Inverse Kinemtics - Plot Sample Trajectory
