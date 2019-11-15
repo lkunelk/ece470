@@ -7,21 +7,21 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     % tol: tolerance for terminating search
     
     clear q % (Nx6) matrix of angles
-    alpha = .1; % step size
+    alpha = .01; % step size
     q(1, :) = q0';
     
-    % while
-    for i=1:10
-        % get torques from attractive and repulsice forces
-        %tau = att(q(end, :)', q2, myrobot)
-        tau = [2 2 2 2 1 1]
+     while norm(q(end,1:5)-q2(1:5)') > tol
+        norms = norm(q(end,1:5)-q2(1:5)')
+        % get torques from attractive and repulsive forces
+        tau = att(q(end, :)', q2, myrobot);
         
         % update angles
-        q(end+1, :) = q(end, :) + alpha * tau / norm(tau);
+        q(end+1, :) = q(end, :) + alpha * tau;
     end
     
     % create PWCP based on q
     % do it after testing
-    
+    [h, w] = size(q);
+    q(:, 6) = linspace(q0(6), q2(6), h);
     qref = q;
 end
