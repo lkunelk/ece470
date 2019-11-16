@@ -29,19 +29,17 @@ function tau = rep(q, myrobot, obs)
                 end
         end
     end
-
+    
     % compute Jacobian
     J = jacobian(q, myrobot);
     
     % compute torques
     tau = zeros(6,1);
-    for i = 1:6
+    for i = 2:6
         tau = tau + J(:,:,i)' * Frep(:,i);
     end
     tau = tau';
-    tau = tau/norm(tau);
-end
-
-function dist_cylinder(q, myrobot, obs)
-    % compute distances to cylinder for all joints
+    if (norm(tau) ~= 0)
+        tau = tau / norm(tau);
+    end
 end

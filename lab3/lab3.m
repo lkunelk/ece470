@@ -1,8 +1,13 @@
 function Lab3()
+    % uncomment run 1 function at a time
     %test_plot()
+    
+    % part 2
     %test_motionplan()
-    test_sphere_cylinder()
-    %test_obstacle()
+    
+    % part 1 and 3
+    %test_sphere_cylinder()
+    test_obstacle()
 end
 
 function test_plot()
@@ -39,16 +44,16 @@ function test_sphere_cylinder()
     H2(1:3,4)=100*[3; -1; 2;]/4;
     q2 = inverse_puma(H2,myrobot);
     
-    tau = att(q1,q2,myrobot)
+    tau = att(q1,q2,myrobot);
     
-    obs = setupobstacle()
+    obs = setupobstacle();
     q3 = 0.9*q1+0.1*q2;
-    tau = rep(q3, myrobot, obs{2}) % This tests the torque for the cylinder obstacle
+    tau = rep(q3, myrobot, obs{1}) % This tests the torque for the cylinder obstacle
     expected = [0.9950 0.0291 -0.0504 0.0790 0.0197 0.0000]
     
-%     q = [pi/2 pi 1.2*pi 0 0 0];
-%     tau = rep(q,myrobot,obs{6})
-%     expected = [-0.1138 -0.2140 -0.9702 0 -0.0037 0]
+    q = [pi/2 pi 1.2*pi 0 0 0];
+    tau = rep(q,myrobot,obs{6})
+    expected = [-0.1138 -0.2140 -0.9702 0 -0.0037 0]
     
     plotobstacle(obs)
     xlim([-100, 100]);
