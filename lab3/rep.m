@@ -16,17 +16,17 @@ function tau = rep(q, myrobot, obs)
                 dist = norm(obs.c - oc);
                 dir = [(oc - obs.c)/norm(oc - obs.c); 0];
                 shortest_dist = dist - obs.R;
-                %if dist < obs.rho0
-                Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
-                %end
+                if shortest_dist < obs.rho0
+                    Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
+                end
             case 'sph'
                 oc = Hs(1:3, 4, i);
                 dist = norm(obs.c - oc);
                 dir = (oc - obs.c)/norm(oc - obs.c);
                 shortest_dist = dist - obs.R;
-                %if dist < obs.rho0
-                Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
-                %end
+                if shortest_dist < obs.rho0
+                    Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
+                end
         end
     end
 
