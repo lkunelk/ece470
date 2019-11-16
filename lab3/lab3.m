@@ -1,7 +1,8 @@
 function Lab3()
     %test_plot()
     %test_motionplan()
-    test_obstacle()
+    test_sphere_cylinder()
+    %test_obstacle()
 end
 
 function test_plot()
@@ -21,18 +22,62 @@ function test_motionplan()
     H2(1:3,4)=[50; 50; 50;];
     q2 = inverse_puma(H2,myrobot);
     
-    q = motionplan(q1', q2', 0, 0, myrobot, 0, 0.01);
+    qref = motionplan(q1', q2', 0, 10, myrobot, 0, 0.01);
+    t=linspace(0,10,300);
+    q = ppval(qref,t)';
     plot_robot(q, myrobot)
 end
 
+function test_sphere_cylinder()
+    myrobot = init_robot();
+    
+    H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
+    H1(1:3,4)=100*[-1; 3; 3;]/4;
+    q1 = inverse_puma(H1,myrobot);
+    
+    H2 = eul2tr([0 pi -pi/2]);
+    H2(1:3,4)=100*[3; -1; 2;]/4;
+    q2 = inverse_puma(H2,myrobot);
+    
+    tau = att(q1,q2,myrobot)
+    
+    obs = setupobstacle()
+    q3 = 0.9*q1+0.1*q2;
+    tau = rep(q3, myrobot, obs{2}) % This tests the torque for the cylinder obstacle
+    expected = [0.9950 0.0291 -0.0504 0.0790 0.0197 0.0000]
+    
+%     q = [pi/2 pi 1.2*pi 0 0 0];
+%     tau = rep(q,myrobot,obs{6})
+%     expected = [-0.1138 -0.2140 -0.9702 0 -0.0037 0]
+    
+    plotobstacle(obs)
+    xlim([-100, 100]);
+    ylim([-100, 100]);
+    zlim([0, 200]);
+    plot_robot(q3, myrobot)
+end
+
 function test_obstacle()
+    myrobot = init_robot();
+
+    H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
+    H1(1:3,4)=100*[-1; 3; 3;]/4;
+    q1 = inverse_puma(H1,myrobot);
+    
+    H2 = eul2tr([0 pi -pi/2]);
+    H2(1:3,4)=100*[3; -1; 2;]/4;
+    q2 = inverse_puma(H2,myrobot);
+
     obs = setupobstacle();
     myrobot = init_robot();
     plotobstacle(obs)
     xlim([-100, 100]);
     ylim([-100, 100]);
-    zlim([0, 100]);
-    plot_robot([0 0 0 0 0 0], myrobot)
+    zlim([0, 200]);
+    
+    q = motionplan(q1, q2, 1, 1, myrobot, obs, 0.1);
+    
+    plot_robot(q, myrobot)
 end
 
 function robot = init_robot()

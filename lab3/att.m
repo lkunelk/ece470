@@ -12,7 +12,7 @@ function tau = att(q1, q2, myrobot)
     Hq2 = forward_puma_lab3(q2,myrobot);
     
     c = [1 1 1 1 1 1];
-    d = 100; % Found a very high number
+    d = 100000; % Found a very high number
     % step3: compute artificial forces
     Fatt = zeros(3,6);
     for i = 1:6

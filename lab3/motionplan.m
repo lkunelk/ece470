@@ -7,12 +7,17 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     % tol: tolerance for terminating search
     
     clear q % (Nx6) matrix of angles
-    alpha = .01; % step size
+    alpha = .02; % step size
     q(1, :) = q0';
     
-     while norm(q(end,1:5)-q2(1:5)') > tol
+     %while norm(q(end,1:5)-q2(1:5)') > tol
+    for i=1:400
         % get torques from attractive and repulsive forces
         tau = att(q(end, :)', q2, myrobot);
+        for i = 1:6
+            tau = tau + rep(q(end, :)', myrobot, obs{i})
+        end
+        tau = tau/norm(tau)
         
         % update angles
         q(end+1, :) = q(end, :) + alpha * tau;
