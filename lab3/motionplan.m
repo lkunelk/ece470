@@ -11,7 +11,6 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     q(1, :) = q0';
     
      while norm(q(end,1:5)-q2(1:5)') > tol
-        norms = norm(q(end,1:5)-q2(1:5)')
         % get torques from attractive and repulsive forces
         tau = att(q(end, :)', q2, myrobot);
         

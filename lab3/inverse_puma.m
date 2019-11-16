@@ -38,5 +38,5 @@ function q = inverse_puma(H, puma)
     q(4) = atan2(R(2,3), R(1,3));
     q(5) = atan2(sqrt(1 - R(3,3)^2), R(3,3));
     q(6) = atan2(R(3,2), -R(3,1));
-    q = q'
+    q = q';
 end
