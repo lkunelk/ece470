@@ -1,41 +1,37 @@
 function Lab3()
+    puma = init_robot();
+    
     % uncomment run 1 function at a time
-    %test_plot()
+    %test_plot_sample_traj(puma)
     
     % part 2
-    %test_motionplan()
+    %part2_test_motion_plan(puma)
     
     % part 1 and 3
-    %test_sphere_cylinder()
-    test_obstacle()
+    %part3_test_sphere_cylinder(puma)
+    test_obstacle(puma)
 end
 
-function test_plot()
-    my_robot = init_robot();
+function test_plot_sample_traj(myrobot)
     q = sample_traj();
-    %obs = setupobstacle();
-    %plotobstacle(obs);
-    plot_robot(q, my_robot);
+    plot_robot(q, myrobot);
 end
 
-function test_motionplan()
-    myrobot = init_robot();
+function part2_test_motion_plan(myrobot)
+    % only test with attractive forces
     H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx
     H1(1:3,4)= [50; 50; 10;]; % This assigns the desired displacement to the hom.tsf.mtx.
-    q1 = inverse_puma(H1,myrobot);
+    q1 = inverse_puma(H1, myrobot);
+    
     H2 = eul2tr([0 pi pi/2]);
-    H2(1:3,4)=[50; 50; 50;];
+    H2(1:3,4)=[20; -20; 120;];
     q2 = inverse_puma(H2,myrobot);
     
-    qref = motionplan(q1', q2', 0, 10, myrobot, 0, 0.01);
-    t=linspace(0,10,300);
-    q = ppval(qref,t)';
+    q = motionplan(q1', q2', 0, 10, myrobot, {}, 0.02);
     plot_robot(q, myrobot)
 end
 
-function test_sphere_cylinder()
-    myrobot = init_robot();
-    
+function part3_test_sphere_cylinder(myrobot)
     H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
     H1(1:3,4)=100*[-1; 3; 3;]/4;
     q1 = inverse_puma(H1,myrobot);
@@ -62,9 +58,7 @@ function test_sphere_cylinder()
     plot_robot(q3, myrobot)
 end
 
-function test_obstacle()
-    myrobot = init_robot();
-
+function test_obstacle(myrobot)
     H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
     H1(1:3,4)=100*[-1; 3; 3;]/4;
     q1 = inverse_puma(H1,myrobot);
@@ -80,7 +74,7 @@ function test_obstacle()
     ylim([-100, 100]);
     zlim([0, 200]);
     
-    q = motionplan(q1, q2, 1, 1, myrobot, obs, 0.1);
+    q = motionplan(q1', q2', 1, 1, myrobot, obs, 0.1);
     
     plot_robot(q, myrobot)
 end

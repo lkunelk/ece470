@@ -5,18 +5,23 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     % myrobot: robot structure
     % obs: obstacle structure
     % tol: tolerance for terminating search
+    size(q0)
+    size(q2)
+    if isequal(size(q0), [6,1]) == 0 || isequal(size(q2), [6,1]) == 0
+        error('Not a column vector!')
+    end
     
     clear q % (Nx6) matrix of angles
-    alpha = .04; % step size
+    alpha = .03; % step size
     q(1, :) = q0';
     
-     %while norm(q(end,1:5)-q2(1:5)') > tol
-    for i=1:400
+     while norm(q(end,1:5)-q2(1:5)') > tol
+         norm(q(end,1:5)-q2(1:5)')
+         
         % get torques from attractive and repulsive forces
-        tau = att(q(end, :)', q2, myrobot)
-        q(end, :)
-        for j = 1:6
-            tau = tau + rep(q(end, :)', myrobot, obs{j})
+        tau = att(q(end, :)', q2, myrobot);
+        for j = 1:size(obs)
+            tau = tau + rep(q(end, :)', myrobot, obs{j});
         end
         
         % update angles
