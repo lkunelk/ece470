@@ -1,6 +1,7 @@
 function Lab3()
     %test_plot()
-    test_motionplan()
+    %test_motionplan()
+    test_obstacle()
 end
 
 function test_plot()
@@ -22,6 +23,16 @@ function test_motionplan()
     
     q = motionplan(q1', q2', 0, 0, myrobot, 0, 0.01);
     plot_robot(q, myrobot)
+end
+
+function test_obstacle()
+    obs = setupobstacle();
+    myrobot = init_robot();
+    plotobstacle(obs)
+    xlim([-100, 100]);
+    ylim([-100, 100]);
+    zlim([0, 100]);
+    plot_robot([0 0 0 0 0 0], myrobot)
 end
 
 function robot = init_robot()
