@@ -12,7 +12,7 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     end
     
     clear q % (Nx6) matrix of angles
-    alpha = .03; % step size
+    alpha = .04; % step size
     q(1, :) = q0';
     
      while norm(q(end,1:5)-q2(1:5)') > tol
@@ -29,8 +29,8 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     end
     
     % create PWCP based on q
-    % do it after testing
     [h, w] = size(q);
     q(:, 6) = linspace(q0(6), q2(6), h);
-    qref = q;
+    t = linspace(t1,t2,size(q,1));
+    qref = spline(t,q');
 end

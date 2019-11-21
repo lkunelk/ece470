@@ -27,7 +27,9 @@ function part2_test_motion_plan(myrobot)
     H2(1:3,4)=[20; -20; 120;];
     q2 = inverse_puma(H2,myrobot);
     
-    q = motionplan(q1', q2', 0, 10, myrobot, {}, 0.02);
+    qref = motionplan(q1', q2', 0, 10, myrobot, [], 0.02);
+    t = linspace(0,10,300);
+    q = ppval(qref,t)';
     plot_robot(q, myrobot)
 end
 
@@ -74,7 +76,11 @@ function test_obstacle(myrobot)
     ylim([-100, 100]);
     zlim([0, 200]);
     
-    q = motionplan(q1', q2', 1, 1, myrobot, obs, 0.1);
+    %q = motionplan(q1', q2', 1, 1, myrobot, obs, 0.1);
+    
+    qref = motionplan(q1', q2', 0, 10, myrobot, obs, 0.02);
+    t = linspace(0,10,300);
+    q = ppval(qref,t)';
     
     plot_robot(q, myrobot)
 end
