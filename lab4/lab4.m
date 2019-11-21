@@ -1,12 +1,12 @@
 function lab4()
-    a6 = 156;
-    kuka = init_robot(a6);
+    kuka = init_robot(156);
+    kuka_forces = init_robot(0);
     
     % uncomment run 1 function at a time
     %test_plot_sample_traj(kuka)
     
     % part 2
-    part2_test_motion_plan(kuka);
+    part2_test_motion_plan(kuka_forces, kuka);
     
     % part 1 and 3
     %part3_test_sphere_cylinder(kuka)
@@ -124,5 +124,5 @@ function plot_robot(q, robot)
     m = H.transl;
     plot3(m(:,1),m(:,2),m(:,3),'r')
     
-%     robot.plot(q, 'floorlevel', 0, 'workspace', [-1000, 1000, -1000, 1000, 0, 2000])
+    robot.plot(q, 'floorlevel', 0, 'workspace', [-1000, 1000, -1000, 1000, 0, 2000])
 end
