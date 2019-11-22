@@ -20,6 +20,9 @@ function plotobstacle(obs)
                 z = r*z + c(3)*ones(size(z));
                 surf(x,y,z);
         end
+        xlim([-1000, 1000]);
+        ylim([-1000, 1000]);
+        zlim([0, 2000])
         hold on;
     end
 

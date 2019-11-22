@@ -6,7 +6,7 @@ function lab4()
     
     %test_without_obstacle(kuka_forces, kuka);
     
-    test_rep_att_forces(kuka)
+    test_rep_att_forces(kuka_forces, kuka)
     
 %     test_obstacle(kuka , a6)
 end
@@ -36,7 +36,7 @@ function test_without_obstacle(kuka_forces, kuka)
     plot_robot(q, kuka)
 end
 
-function test_rep_att_forces(myrobot)
+function test_rep_att_forces(kuka_forces, kuka)
     % after implementing force from floor and cylinder
     % test if we get expected values
     
@@ -45,19 +45,31 @@ function test_rep_att_forces(myrobot)
     % setup test obstacle
     prepobs{1}.R = 100;
     prepobs{1}.c = [250; 0];
-    prepobs{1}.rho0 = 500;
-    prepobs{1}.h = 300;
+    prepobs{1}.rho0 = 100;
+    prepobs{1}.h = 300; 
     prepobs{1}.type = 'cyl';
     
-    q = [pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6];
+    prepobs{2}.rho0 = 200;
+    prepobs{2}.h = 32; 
+    prepobs{2}.type = 'wsp';
+    
+    actual_tau = rep([pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6], kuka_forces, prepobs{1})
+    expected_tau = [0.1795 0.9540 0.2353 -0.0344 -0.0344 0.0000]
+    
+    p1 = [620 375 50];
+    p2 = [620 -375 50];
+    R=[0 0 1;0 -1 0;1 0 0];
+    H1=[R p1';zeros(1,3) 1];
+    H2=[R p2';zeros(1,3) 1];
+    
+    q1 = inverse_kuka(H1, kuka);
+    q2 = inverse_kuka(H2, kuka);
+    
+    qref = motionplan(q1, q2, 0, 10, kuka_forces, prepobs, 0.02);
+    t = linspace(0,10,100);
+    q = ppval(qref,t)';
     
     plot_robot(q, kuka)
-    hold on;
-    plotobstacle(prepobs)
-    
-    % TODO: arnav implement force from cylinder and finish testing
-    actual_tau = rep([pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6], myrobot, prepobs{1})
-    expected_tau = [0.1795 0.9540 0.2353 -0.0344 -0.0344 0.0000]
 end
 
 function robot = init_robot(a6)
@@ -78,7 +90,6 @@ function robot = init_robot(a6)
         [0, d6, -a6, 0   ]
     ];
 
-    
     robot = mykuka(DH);
 end
 

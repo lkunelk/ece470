@@ -39,9 +39,13 @@ function tau = rep(q, myrobot, obs)
             if shortest_dist < rho
                 Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/rho)/shortest_dist^2 * dir;
             end                
-        elseif (obs.type == 'workspace')
-            H = obs.h;
-            % TODO: Nam implement force from workspace
+        elseif (obs.type == 'wsp')
+            dir = [0; 0; 1];
+            rho = obs.rho0
+            shortest_dist = norm(obs.h - Hs(3, 4, i))
+            if shortest_dist < rho
+                Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/rho)/shortest_dist^2 * dir;
+            end 
         end
     end
     

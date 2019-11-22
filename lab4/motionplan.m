@@ -11,18 +11,20 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     end
     
     clear q % (Nx6) matrix of angles
-    alpha = .005; % step size
+    alpha_att = 0.013; % step size
+    alpha_rep = 0.01
     q(1, :) = q0';
     while norm(q(end,1:5)-q2(1:5)') > tol
-        err = norm(q(end,1:5)-q2(1:5)')
+        %err = norm(q(end,1:5)-q2(1:5)')
         % get torques from attractive and repulsive forces
-        tau = att(q(end, :)', q2, myrobot);
-        for j = 1:size(obs)
-            tau = tau + rep(q(end, :)', myrobot, obs{j});
+        tau_att = att(q(end, :)', q2, myrobot);
+        tau_rep = 0;
+        for j = 1:length(obs)
+            tau_rep = tau_rep + rep(q(end, :)', myrobot, obs{j});
         end
         
         % update angles
-        q(end+1, :) = q(end, :) + alpha * tau;
+        q(end+1, :) = q(end, :) + alpha_att * tau_att + alpha_rep * tau_rep;
     end
     
     % create PWCP based on q
