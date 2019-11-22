@@ -19,20 +19,23 @@ function test_plot_sample_traj(myrobot)
     plot_robot(q, myrobot);
 end
 
-function part2_test_motion_plan(myrobot)
+function part2_test_motion_plan(kuka_forces, kuka)
     % only test with attractive forces
     H1(1:3,1:3) = [0 0 1;0 -1 0;1 0 0]; % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx
     H1(1:3,4)= [620; 375; 50]; % This assigns the desired displacement to the hom.tsf.mtx.
     H1(4,:) = [0 0 0 1];
-    q1 = inverse_kuka(H1, myrobot)
+    q1 = inverse_kuka(H1, kuka)
     
     H2(1:3,1:3) = [0 0 1;0 -1 0;1 0 0];
     H2(1:3,4)=[620; -375; 50];
     H2(4,:) = [0 0 0 1];
-    q2 = inverse_kuka(H2,myrobot)
+    q2 = inverse_kuka(H2,kuka)
     
-    q = motionplan(q1, q2, 0, 10, myrobot, {}, 0.1);
-    plot_robot(q, myrobot)
+    qref = motionplan(q1, q2, 0, 10, kuka_forces, {}, 0.1);
+    t = linspace(0,10,100);
+    q = ppval(qref,t)';
+    
+    plot_robot(q, kuka)
 end
 
 function part3_test_sphere_cylinder(myrobot)

@@ -5,16 +5,13 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     % myrobot: robot structure
     % obs: obstacle structure
     % tol: tolerance for terminating search
-    size(q0)
-    size(q2)
-    q0
-    q2
+    
     if isequal(size(q0), [6,1]) == 0 || isequal(size(q2), [6,1]) == 0
         error('Not a column vector!')
     end
     
     clear q % (Nx6) matrix of angles
-    alpha = .01; % step size
+    alpha = .005; % step size
     q(1, :) = q0';
     while norm(q(end,1:5)-q2(1:5)') > tol
         err = norm(q(end,1:5)-q2(1:5)')
@@ -31,5 +28,6 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     % create PWCP based on q
     [h, w] = size(q);
     q(:, 6) = linspace(q0(6), q2(6), h);
-    qref = q;
+    t = linspace(t1,t2,size(q,1));
+    qref = spline(t,q');
 end
