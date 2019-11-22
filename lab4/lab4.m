@@ -96,7 +96,7 @@ end
 
 function plot_robot(q, robot)
     % Forward Kinemtaics - 2 Plot robot following sample trajectory
-    H = forward(q,robot);
+    H = robot.fkine(q);
     m = H.transl;
     plot3(m(:,1),m(:,2),m(:,3),'r')
     
