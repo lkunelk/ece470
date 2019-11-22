@@ -2,14 +2,12 @@ function lab4()
     kuka = init_robot(156);
     kuka_forces = init_robot(0);
     
-    % uncomment run 1 function at a time
     %test_plot_sample_traj(kuka)
     
-    % part 2
-    part2_test_motion_plan(kuka_forces, kuka);
+    %test_without_obstacle(kuka_forces, kuka);
     
-    % part 1 and 3
-    %part3_test_sphere_cylinder(kuka)
+    test_rep_att_forces(kuka)
+    
 %     test_obstacle(kuka , a6)
 end
 
@@ -19,7 +17,7 @@ function test_plot_sample_traj(myrobot)
     plot_robot(q, myrobot);
 end
 
-function part2_test_motion_plan(kuka_forces, kuka)
+function test_without_obstacle(kuka_forces, kuka)
     % only test with attractive forces
     H1(1:3,1:3) = [0 0 1;0 -1 0;1 0 0]; % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx
     H1(1:3,4)= [620; 375; 50]; % This assigns the desired displacement to the hom.tsf.mtx.
@@ -38,53 +36,28 @@ function part2_test_motion_plan(kuka_forces, kuka)
     plot_robot(q, kuka)
 end
 
-function part3_test_sphere_cylinder(myrobot)
-    H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
-    H1(1:3,4)=100*[-1; 3; 3;]/4;
-    q1 = inverse_kuka(H1,myrobot);
+function test_rep_att_forces(myrobot)
+    % after implementing force from floor and cylinder
+    % test if we get expected values
     
-    H2 = eul2tr([0 pi -pi/2]);
-    H2(1:3,4)=100*[3; -1; 2;]/4;
-    q2 = inverse_kuka(H2,myrobot);
+    kuka = init_robot(156);
     
-    tau = att(q1,q2,myrobot);
+    % setup test obstacle
+    prepobs{1}.R = 100;
+    prepobs{1}.c = [250; 0];
+    prepobs{1}.rho0 = 500;
+    prepobs{1}.h = 300;
+    prepobs{1}.type = 'cyl';
     
-    obs = setupobstacle();
-    q3 = 0.9*q1+0.1*q2;
-    tau = rep(q3, myrobot, obs{1}) % This tests the torque for the cylinder obstacle
-    expected = [0.9950 0.0291 -0.0504 0.0790 0.0197 0.0000]
+    q = [pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6];
     
-    q = [pi/2 pi 1.2*pi 0 0 0];
-    tau = rep(q,myrobot,obs{6})
-    expected = [-0.1138 -0.2140 -0.9702 0 -0.0037 0]
+    plot_robot(q, kuka)
+    hold on;
+    plotobstacle(prepobs)
     
-    plotobstacle(obs)
-    xlim([-100, 100]);
-    ylim([-100, 100]);
-    zlim([0, 200]);
-    plot_robot(q3, myrobot)
-end
-
-function test_obstacle(myrobot , a6)
-    H1 = eul2tr([0 pi pi/2]); % eul2tr converts ZYZ Euler angles to a hom. tsf. mtx>H1(1:3,4)=100*[-1; 3; 3;]/4; % This assigns the desired displacement to the hom.tsf.mtx.
-    H1(1:3,4)=100*[-1; 3; 3;]/4;
-    q1 = inverse_kuka(H1,myrobot);
-    
-    H2 = eul2tr([0 pi -pi/2]);
-    H2(1:3,4)=100*[3; -1; 2;]/4;
-    q2 = inverse_kuka(H2,myrobot);
-   
-    obs = setupobstacle();
-    myrobot = init_robot(a6);
-    plotobstacle(obs)
-    xlim([-100, 100]);
-    ylim([-100, 100]);
-    zlim([0, 200]);
-    
-   
-    q = motionplan(q1, q2, 1, 1, myrobot, obs, 0.1);
-    
-    plot_robot(q, myrobot)
+    % TODO: arnav implement force from cylinder and finish testing
+    actual_tau = rep([pi/10,pi/12,pi/6,pi/2,pi/2,-pi/6], myrobot, prepobs{1})
+    expected_tau = [0.1795 0.9540 0.2353 -0.0344 -0.0344 0.0000]
 end
 
 function robot = init_robot(a6)
@@ -127,5 +100,5 @@ function plot_robot(q, robot)
     m = H.transl;
     plot3(m(:,1),m(:,2),m(:,3),'r')
     
-    robot.plot(q, 'floorlevel', 0, 'workspace', [-1000, 1000, -1000, 1000, 0, 2000])
+    robot.plot(q, 'floorlevel', 0, 'workspace', [-1000, 1000, -1000, 1000, 0, 1500])
 end

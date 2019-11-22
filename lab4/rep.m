@@ -12,21 +12,21 @@ function tau = rep(q, myrobot, obs)
     for i = 1:6
         switch obs.type
             case 'cyl'
+                % TODO: Arnav implement cylinder
+                % 3 cases:
+                %   - joint directly above cylinder
+                %   - joint directly to the side of cylinder (same as lab3)
+                %   - joint diagonally away from cylinder
                 oc = Hs(1:2, 4, i);
                 dist = norm(obs.c - oc);
                 dir = [(oc - obs.c)/norm(oc - obs.c); 0];
                 shortest_dist = dist - obs.R;
                 if shortest_dist < obs.rho0
-                    Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
+                    Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir
                 end
-            case 'sph'
-                oc = Hs(1:3, 4, i);
-                dist = norm(obs.c - oc);
-                dir = (oc - obs.c)/norm(oc - obs.c);
-                shortest_dist = dist - obs.R;
-                if shortest_dist < obs.rho0
-                    Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/obs.rho0)/shortest_dist^2 * dir;
-                end
+            
+            case 'workspace'
+                % TODO: Nam implement force from workspace
         end
     end
     
