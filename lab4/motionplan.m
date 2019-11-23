@@ -11,7 +11,7 @@ function qref = motionplan(q0,q2,t1,t2,myrobot,obs,tol)
     end
     
     clear q % (Nx6) matrix of angles
-    alpha_att = 0.013; % step size
+    alpha_att = 0.01; % step size
     alpha_rep = 0.01
     q(1, :) = q0';
     while norm(q(end,1:5)-q2(1:5)') > tol

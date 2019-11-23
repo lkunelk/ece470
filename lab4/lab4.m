@@ -1,12 +1,14 @@
 function lab4()
     kuka = init_robot(156);
     kuka_forces = init_robot(0);
-    
+    %find_cyl_pos()
+    %init_motion_planning();
+    init_creative_motion_planning();
     %test_plot_sample_traj(kuka)
     
     %test_without_obstacle(kuka_forces, kuka);
     
-    test_rep_att_forces(kuka_forces, kuka)
+    %test_rep_att_forces(kuka_forces, kuka)
     
 %     test_obstacle(kuka , a6)
 end
@@ -112,4 +114,190 @@ function plot_robot(q, robot)
     plot3(m(:,1),m(:,2),m(:,3),'r')
     
     robot.plot(q, 'floorlevel', 0, 'workspace', [-1000, 1000, -1000, 1000, 0, 1500])
+end
+
+function init_motion_planning()
+    % 
+    z_offset = 17;
+    z_grid = 45; 
+    p0 = [370; -440; 225 + z_offset];
+    p1 = [370; -440; z_grid + z_offset];
+    p2 = [750; -220; 225 + z_offset]; 
+    p3 = [620; 350; 225 + z_offset];
+    
+    q_home = [0; 1.5708; 0; 0; 1.5708; 0];
+    
+    kuka = init_robot(156);
+    kuka_forces = init_robot(0);
+    
+    R = [0 0 1; 0 -1 0; 1 0 0];
+    H0 = [R p0 ; 0 0 0 1];
+    H1 = [R p1 ; 0 0 0 1];
+    H2 = [R p2 ; 0 0 0 1];
+    H3 = [R p3 ; 0 0 0 1];
+    q0 = inverse_kuka(H0,kuka);
+    q1 = inverse_kuka(H1,kuka);
+    q2 = inverse_kuka(H2,kuka);
+    q3 = inverse_kuka(H3,kuka);
+    obs = setupobstacle(); 
+    plotobstacle(obs);
+    tol = 0.01;
+    qref0 = motionplan(q_home,q0,0,10,kuka_forces,obs,tol);
+    
+    t = linspace(0,10,100);
+    q_result0 = ppval(qref0,t)'
+    
+    %qref1 = motionplan(q0,q1,0,10,kuka_forces,obs,tol)
+    %q_result1 = ppval(qref1,t)';
+    
+    qref2 = motionplan(q1,q2,0,10,kuka_forces,obs,tol);
+    q_result2 = ppval(qref2,t)';
+    
+    
+    qref3 = motionplan(q2,q3,0,10,kuka_forces,obs,tol);
+    q_result3 = ppval(qref3,t)';
+    
+    %q_result = [q_result0; q_result1 ; q_result2; q_result3]
+    q_result = [q_result0]
+    q_result_final = [q_result2; q_result3]
+    q_result_total = [q_result0; q_result2; q_result3]
+    vel = 0.04;
+    for i = 1:length(q_result)
+        setAngles(q_result(i,:), vel);
+    end
+    setGripper(0);
+    setAngles(q1,vel);
+    setGripper(1);
+    for i = 1:length(q_result_final)
+        setAngles(q_result_final(i,:), vel);
+    end
+    setGripper(0);
+    %plot_robot(q_result_total, kuka)    
+end
+
+function init_creative_motion_planning()
+    % 
+    z_offset_init = 25;
+    z_offset = 5;
+    z_grid = 45; 
+    p0 = [370; -440; 225 + z_offset_init];
+    p1 = [370; -440; z_grid + z_offset_init];
+    p2 = [750; -220; 225 + z_offset_init]; 
+    p3 = [620; 350; 225 + z_offset_init];
+    
+    q_home = [0; 1.5708; 0; 0; 1.5708; 0];
+    
+    kuka = init_robot(156);
+    kuka_forces = init_robot(0);
+    
+    R = [0 0 1; 0 -1 0; 1 0 0];
+    H0 = [R p0 ; 0 0 0 1];
+    H1 = [R p1 ; 0 0 0 1];
+    H2 = [R p2 ; 0 0 0 1];
+    H3 = [R p3 ; 0 0 0 1];
+    q0 = inverse_kuka(H0,kuka);
+    q1 = inverse_kuka(H1,kuka);
+    q2 = inverse_kuka(H2,kuka);
+    q3 = inverse_kuka(H3,kuka);
+    obs = setupobstacle(); 
+    plotobstacle(obs);
+    tol = 0.01;
+    qref0 = motionplan(q_home,q0,0,10,kuka_forces,obs,tol);
+    
+    t = linspace(0,10,100);
+    q_result0 = ppval(qref0,t)'
+    
+    %qref1 = motionplan(q0,q1,0,10,kuka_forces,obs,tol)
+    %q_result1 = ppval(qref1,t)';
+    
+    qref2 = motionplan(q1,q2,0,10,kuka_forces,obs,tol);
+    q_result2 = ppval(qref2,t)';
+    
+    
+    qref3 = motionplan(q2,q3,0,10,kuka_forces,obs,tol);
+    q_result3 = ppval(qref3,t)';
+    
+    %q_result = [q_result0; q_result1 ; q_result2; q_result3]
+    q_result = [q_result0]
+    q_result_final = [q_result2; q_result3]
+    q_result_total = [q_result0; q_result2; q_result3]
+    vel = 0.04;
+    for i = 1:length(q_result)
+        setAngles(q_result(i,:), vel);
+    end
+    setGripper(0);
+    setAngles(q1,vel);
+    setGripper(1);
+    for i = 1:length(q_result_final)
+        setAngles(q_result_final(i,:), vel);
+    end
+    setGripper(0);
+    
+    %plot_robot(q_result_total, kuka)    
+    
+    p0 = [370; -440; 225 + z_offset];
+    p1 = [370; -440; z_grid + z_offset];
+    p2 = [750; -220; 225 + z_offset]; 
+    p3 = [620; 350; 225 + z_offset];
+    
+    R = [0 0 1; 0 -1 0; 1 0 0];
+    H0 = [R p0 ; 0 0 0 1];
+    H1 = [R p1 ; 0 0 0 1];
+    H2 = [R p2 ; 0 0 0 1];
+    H3 = [R p3 ; 0 0 0 1];
+    q0 = inverse_kuka(H0,kuka);
+    q1 = inverse_kuka(H1,kuka);
+    q2 = inverse_kuka(H2,kuka);
+    q3 = inverse_kuka(H3,kuka);
+    obs = setupobstacle(); 
+    plotobstacle(obs);
+    tol = 0.01;
+    qref0 = motionplan(q_home,q0,0,10,kuka_forces,obs,tol);
+    
+    t = linspace(0,10,100);
+    q_result0 = ppval(qref0,t)'
+    
+    qref2 = motionplan(q1,q2,0,10,kuka_forces,obs,tol);
+    q_result2 = ppval(qref2,t)';
+    
+    
+    qref3 = motionplan(q2,q3,0,10,kuka_forces,obs,tol);
+    q_result3 = ppval(qref3,t)';
+    
+    %q_result = [q_result0; q_result1 ; q_result2; q_result3]
+    q_result = [q_result0]
+    q_result_final = [q_result2; q_result3]
+    %q_result_total = [q_result0; q_result2; q_result3]
+    vel = 0.04;
+    for i = 1:length(q_result)
+        setAngles(q_result(i,:), vel);
+    end
+    setGripper(0);
+    setAngles(q1,vel);
+    setGripper(1);
+    for i = 1:length(q_result_final)
+        setAngles(q_result_final(i,:), vel);
+    end
+    setGripper(0);
+end
+
+
+function find_cyl_pos()
+    z_offset = 10;
+    pos1 = [620; 0; 32 + z_offset]; 
+    pos2 = [620; -440; 32+z_offset];
+    R = [0 0 1; 0 -1 0; 1 0 0];
+    H0 = [R pos1 ; 0 0 0 1];
+    H1 = [R pos2 ; 0 0 0 1];
+    
+    kuka = init_robot(156);
+    vel = 0.04; 
+    setHome(vel);
+    q0 = inverse_kuka(H0,kuka);
+    q1 = inverse_kuka(H1,kuka);
+    
+    %setAngles(q0,vel);
+    %setHome(vel);
+    setAngles(q1, vel);
+    
 end

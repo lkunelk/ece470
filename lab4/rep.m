@@ -10,7 +10,7 @@ function tau = rep(q, myrobot, obs)
     % compute F repulsive for obstacle on each joint
     Frep = zeros(3,6);
     for i = 1:6
-        if (obs.type == 'cyl')                
+        if (obs.type == 'cyl')            
             % TODO: Arnav implement cylinder
             % 3 cases:
             %   - joint directly above cylinder
@@ -41,8 +41,8 @@ function tau = rep(q, myrobot, obs)
             end                
         elseif (obs.type == 'wsp')
             dir = [0; 0; 1];
-            rho = obs.rho0
-            shortest_dist = norm(obs.h - Hs(3, 4, i))
+            rho = obs.rho0;
+            shortest_dist = norm(obs.h - Hs(3, 4, i));
             if shortest_dist < rho
                 Frep(:, i) = Frep(:, i) + zeta*(1/shortest_dist - 1/rho)/shortest_dist^2 * dir;
             end 
